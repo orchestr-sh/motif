@@ -1,0 +1,28 @@
+/**
+ * index.css
+ * Full library barrel — imports everything in dependency order.
+ * Use this for convenience, or import files individually for smaller bundles.
+ *
+ * Recommended selective import pattern:
+ *
+ *   @import 'yourlib/core/tokens.css';
+ *   @import 'yourlib/core/reset.css';
+ *   @import 'yourlib/components/button.css';
+ *   @import 'yourlib/utilities/layout.css';
+ */
+
+/* ① Core — must load first */
+@import './core/tokens.css';
+@import './core/reset.css';
+@import './core/typography.css';
+
+/* ② Components */
+@import './components/button.css';
+@import './components/card.css';
+@import './components/badge.css';
+@import './components/input.css';
+
+/* ③ Utilities — load last so they can override */
+@import './utilities/layout.css';
+@import './utilities/spacing.css';
+@import './utilities/color.css';

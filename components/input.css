@@ -1,0 +1,304 @@
+/**
+ * input.css
+ * Form controls — text input, textarea, select, checkbox, radio, toggle.
+ * Depends on: tokens.css
+ */
+
+/* ─── Field wrapper ───────────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+
+.field-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.field-label-required::after {
+  content: ' *';
+  color: var(--color-danger-500);
+}
+
+.field-hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.field-error-msg {
+  font-size: var(--text-xs);
+  color: var(--color-danger-500);
+}
+
+/* ─── Base input ──────────────────────────────────────────────── */
+
+.input {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-normal) var(--ease-default),
+              box-shadow var(--duration-normal) var(--ease-default);
+  appearance: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.input:hover:not(:disabled) {
+  border-color: var(--color-neutral-400);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.15);
+}
+
+.input:disabled {
+  background-color: var(--color-bg-muted);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.input:read-only {
+  background-color: var(--color-bg-subtle);
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────── */
+
+.input-sm {
+  padding: var(--space-1-5) var(--space-2-5);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+}
+
+/* .input = md default */
+
+.input-lg {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-base);
+  border-radius: var(--radius-lg);
+}
+
+/* ─── States ──────────────────────────────────────────────────── */
+
+.input-error {
+  border-color: var(--color-danger-500);
+}
+.input-error:focus {
+  border-color: var(--color-danger-500);
+  box-shadow: 0 0 0 3px rgb(239 68 68 / 0.15);
+}
+
+.input-success {
+  border-color: var(--color-success-500);
+}
+.input-success:focus {
+  border-color: var(--color-success-500);
+  box-shadow: 0 0 0 3px rgb(34 197 94 / 0.15);
+}
+
+/* ─── Textarea ────────────────────────────────────────────────── */
+
+.textarea {
+  composes: input;
+  resize: vertical;
+  min-height: 6rem;
+}
+
+/* ─── Select ──────────────────────────────────────────────────── */
+
+.select {
+  composes: input;
+  padding-right: var(--space-8);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  cursor: pointer;
+}
+
+/* ─── Input with icon / addon ─────────────────────────────────── */
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group .input {
+  width: 100%;
+}
+
+.input-group-icon-left,
+.input-group-icon-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-subtle);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.input-group-icon-left  { left: var(--space-3); }
+.input-group-icon-right { right: var(--space-3); }
+
+.input-group .input-has-icon-left  { padding-left: var(--space-9, 2.25rem); }
+.input-group .input-has-icon-right { padding-right: var(--space-9, 2.25rem); }
+
+/* ─── Inline addon (prefix / suffix) ─────────────────────────── */
+
+.input-addon {
+  display: flex;
+}
+
+.input-addon-prefix,
+.input-addon-suffix {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  background-color: var(--color-bg-muted);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.input-addon-prefix {
+  border-right: none;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.input-addon-suffix {
+  border-left: none;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.input-addon .input {
+  border-radius: 0;
+  flex: 1;
+}
+
+.input-addon .input:first-child { border-radius: var(--radius-md) 0 0 var(--radius-md); }
+.input-addon .input:last-child  { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+
+/* ─── Checkbox & Radio ────────────────────────────────────────── */
+
+.checkbox,
+.radio {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid var(--color-border-strong);
+  background-color: var(--color-bg);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--duration-fast) var(--ease-default),
+              border-color var(--duration-fast) var(--ease-default);
+}
+
+.checkbox { border-radius: var(--radius-sm); }
+.radio    { border-radius: var(--radius-full); }
+
+.checkbox:checked,
+.radio:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.checkbox:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.radio:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.checkbox:focus-visible,
+.radio:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.checkbox:disabled,
+.radio:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Control row (checkbox/radio + label inline) */
+.control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.control-label {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+/* ─── Toggle ──────────────────────────────────────────────────── */
+
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 2.5rem;
+  height: 1.375rem;
+  cursor: pointer;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-track {
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-neutral-300);
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-normal) var(--ease-default);
+}
+
+.toggle-thumb {
+  position: absolute;
+  left: 2px;
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--color-white);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.toggle input:checked ~ .toggle-track {
+  background-color: var(--color-accent);
+}
+
+.toggle input:checked ~ .toggle-thumb {
+  transform: translateX(1.125rem);
+}
+
+.toggle input:focus-visible ~ .toggle-track {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

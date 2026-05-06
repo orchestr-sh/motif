@@ -1,0 +1,32 @@
+{
+  "name": "@orchestr-sh/motif",
+  "version": "0.1.0",
+  "description": "Modular CSS utility library by Orchestr. One file per component — import only what you need.",
+  "main": "index.css",
+  "style": "index.css",
+  "files": [
+    "core/",
+    "components/",
+    "utilities/",
+    "index.css",
+    "README.md"
+  ],
+  "keywords": [
+    "css",
+    "utility",
+    "design-system",
+    "modular",
+    "tokens",
+    "components",
+    "ui"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orchestr/motif"
+  },
+  "bugs": {
+    "url": "https://github.com/orchestr-sh/motif/issues"
+  },
+  "homepage": "https://github.com/orchestr-sh/motif#readme"
+}

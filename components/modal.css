@@ -1,0 +1,118 @@
+/**
+ * modal.css
+ * Modal dialog component using native <dialog> element.
+ * Depends on: tokens.css
+ *
+ * Usage:
+ *   <dialog class="modal">
+ *     <div class="modal-header">
+ *       <h2 class="modal-title">Title</h2>
+ *       <button class="modal-close" aria-label="Close">&times;</button>
+ *     </div>
+ *     <div class="modal-body">Content</div>
+ *     <div class="modal-footer">
+ *       <button class="btn btn-secondary">Cancel</button>
+ *       <button class="btn btn-primary">Confirm</button>
+ *     </div>
+ *   </dialog>
+ *
+ * JavaScript:
+ *   const dialog = document.querySelector('dialog');
+ *   dialog.showModal();        // open
+ *   dialog.close();            // close
+ */
+
+/* ─── Base ────────────────────────────────────────────────────── */
+
+dialog.modal {
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: 0;
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-2xl);
+  width: min(90vw, 32rem);
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: var(--z-modal);
+}
+
+dialog.modal::backdrop {
+  background-color: rgb(0 0 0 / 0.5);
+}
+
+/* ─── Sections ────────────────────────────────────────────────── */
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+
+.modal-body {
+  padding: var(--space-6);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+/* ─── Close button ────────────────────────────────────────────── */
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0;
+  transition: color var(--duration-fast) var(--ease-default),
+              background-color var(--duration-fast) var(--ease-default);
+}
+
+.modal-close:hover {
+  color: var(--color-text);
+  background-color: var(--color-bg-muted);
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────── */
+
+dialog.modal-sm {
+  width: min(90vw, 20rem);
+}
+
+dialog.modal-lg {
+  width: min(90vw, 48rem);
+}
+
+dialog.modal-xl {
+  width: min(90vw, 64rem);
+}

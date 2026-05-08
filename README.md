@@ -7,7 +7,8 @@ A thoughtfully designed CSS utility library built for clarity and memorability. 
 - **Better naming** — semantic scales (xs, sm, md, lg, xl) instead of arbitrary numbers
 - **Fewer to memorize** — rational variants only, no class explosion
 - **Token-driven** — change one variable, theme everything
-- **No breakpoint madness** — design for all screens, not mobile-first variants
+- **Dark mode built-in** — one attribute toggle, OS preference fallback
+- **Responsive variants** (optional) — sm:/md:/lg:/xl: prefixes, CDN-safe, no build step
 
 ---
 
@@ -69,24 +70,39 @@ The bundler resolves `@orchestr-sh/motif` to `node_modules/@orchestr-sh/motif/` 
 ## File structure
 
 ```
-@orchestr-sh/
+@orchestr-sh/motif/
 ├── index.css                   ← barrel (imports everything)
 │
+├── bin/
+│   └── motif.js                ← CLI: npx motif build --content ... --output ...
+│
 ├── core/
-│   ├── tokens.css              ← CSS custom properties (⚠ load first)
+│   ├── tokens.css              ← CSS custom properties (⚠ load first) + dark mode
 │   ├── reset.css               ← normalize & base defaults
 │   └── typography.css          ← headings, body text, prose
 │
 ├── components/
-│   ├── button.css              ← .btn and all variants
+│   ├── button.css              ← .btn, .btn-primary, .btn-sm, etc.
 │   ├── card.css                ← .card, .card-header, .card-body …
 │   ├── badge.css               ← .badge and variants
-│   └── input.css               ← .input, .select, .checkbox, .toggle …
+│   ├── input.css               ← .input, .select, .checkbox, .toggle …
+│   ├── alert.css               ← .alert, .alert-info, .alert-success, …
+│   ├── modal.css               ← dialog modal with .modal-header, .modal-body
+│   ├── dropdown.css            ← .dropdown with CSS-only :focus-within
+│   └── tabs.css                ← .tabs with aria-selected toggle
 │
-└── utilities/
-    ├── layout.css              ← flex, grid, container, position
-    ├── spacing.css             ← margin, padding
-    └── color.css               ← bg, border, shadow, opacity
+├── utilities/
+│   ├── layout.css              ← flex, grid, container, position (+ semantic gap)
+│   ├── spacing.css             ← margin, padding (semantic scale)
+│   ├── color.css               ← bg, border, shadow, opacity
+│   └── responsive.css          ← optional: sm:/md:/lg:/xl: responsive variants
+│
+├── extensions/
+│   └── EXTENSIONS.md           ← how to create custom components & themes
+│
+├── README.md                   ← you are here
+├── NAMING.md                   ← naming philosophy & quick lookup
+└── package.json                ← with bin entry for CLI
 ```
 
 ---
@@ -111,6 +127,39 @@ Override any token in your own `:root` block **after** importing `tokens.css`:
   --font-sans: 'Geist', system-ui, sans-serif;
 }
 ```
+
+---
+
+## Dark mode
+
+Dark mode works out of the box — it's built into `tokens.css` and requires zero changes to your HTML or components. Everything uses semantic tokens, so they automatically invert in dark mode.
+
+### Automatic dark mode (OS preference)
+
+The library respects the system preference by default. Users in dark mode OS automatically see the dark palette.
+
+### Manual dark mode toggle (JS)
+
+Toggle dark mode explicitly with one line of JavaScript:
+
+```js
+// Turn on dark mode
+document.documentElement.dataset.theme = 'dark';
+
+// Turn off (use light mode always)
+document.documentElement.dataset.theme = 'light';
+
+// Auto (follow OS preference)
+delete document.documentElement.dataset.theme;
+```
+
+No CSS changes needed — all components respond to the `data-theme` attribute automatically.
+
+### How it works
+
+- **All semantic tokens** (`--color-bg`, `--color-text`, `--color-border`, etc.) are redefined in dark mode
+- **All raw palette tokens** (`--color-primary-600`, `--color-neutral-900`, etc.) stay the same — dark mode only overrides the semantic aliases
+- **Result:** changing the theme at `:root` level automatically themes every component, because nothing has hardcoded color values
 
 ---
 
@@ -155,6 +204,59 @@ Motif ships ~200 classes. Tailwind ships 10,000+. We win on:
 4. **Flexibility** — Token system means you can theme/customize without touching CSS
 
 **Want deep details?** See [NAMING.md](./NAMING.md) for the complete naming philosophy with lookup tables.
+
+---
+
+## Responsive variants (optional)
+
+Responsive variants are **optional** — import only if you need them:
+
+```css
+/* Add this to your CSS (in addition to the base imports) */
+@import '@orchestr-sh/motif/utilities/responsive.css';
+```
+
+Then use the `sm:`, `md:`, `lg:`, `xl:` prefixes in your HTML:
+
+```html
+<!-- Mobile: column. Tablet (768px+): row -->
+<div class="flex-col md:flex-row gap-sm md:gap-md">
+  <div>Sidebar</div>
+  <div>Content</div>
+</div>
+
+<!-- Mobile: 1 column. Desktop (1024px+): 3 columns -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+  <div class="card">Card 1</div>
+  <div class="card">Card 2</div>
+  <div class="card">Card 3</div>
+</div>
+
+<!-- Hidden on mobile, visible from tablet onward -->
+<div class="hidden md:flex">Desktop navigation</div>
+```
+
+### Breakpoints
+
+| Prefix | Min width | Use case |
+|--------|-----------|----------|
+| (none) | 0px | Mobile-first (default) |
+| `sm:` | 640px | Small tablets |
+| `md:` | 768px | Tablets and larger |
+| `lg:` | 1024px | Desktops and larger |
+| `xl:` | 1280px | Large screens |
+
+### Classes with responsive variants
+
+- **Display:** `block`, `flex`, `grid`, `hidden`, `inline-block`, `inline-flex`, `inline-grid`
+- **Flex:** `flex-row`, `flex-col`, `flex-wrap`, `flex-nowrap`, `items-center`, `items-start`, `items-end`, `justify-center`, `justify-between`, `justify-start`, `justify-end`
+- **Grid:** `grid-cols-1` through `grid-cols-4`, `grid-cols-6`, `grid-cols-12`, `col-span-full`
+- **Gap:** `gap-xs`, `gap-sm`, `gap-md`, `gap-lg`, `gap-xl` (and directional: `gap-x-*`, `gap-y-*`)
+- **Padding:** `p-xs`, `p-sm`, `p-md`, `p-lg`, `p-xl`, and directional: `px-*`, `py-*`
+- **Sizing:** `w-full`, `w-auto`, `h-full`, `h-auto`
+- **Text:** `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-left`, `text-center`, `text-right`
+
+**Note on syntax:** The backslash in CSS (`.md\:flex`) is just CSS syntax. In your HTML, you write it without the backslash: `class="md:flex"`. The backslash only appears in the CSS file, not in HTML.
 
 ---
 
@@ -335,6 +437,8 @@ Here are the layouts and component combos you'll use 80% of the time:
 |------|-----|----------|
 | **Spacing** | Use semantic scale: xs/sm/md/lg/xl | `p-md`, `mb-lg`, `gap-sm` |
 | **Colors** | Semantic + palette number | `text-muted`, `bg-danger`, `border-accent` |
+| **Dark mode** | Built-in: OS preference + JS toggle | `document.documentElement.dataset.theme = 'dark'` |
+| **Responsive** | Optional breakpoint prefixes (import responsive.css) | `md:flex-row`, `lg:grid-cols-3`, `sm:hidden` |
 | **Size** | Consistent naming pattern | `btn-sm`, `card-lg`, `input-lg` |
 | **Layout** | Flex/grid utilities | `flex`, `center`, `stack`, `grid grid-cols-3` |
 | **Forms** | Field wrapper + input | `<div class="field">` + `<label>` + `<input class="input">` |
@@ -510,6 +614,151 @@ Here are the layouts and component combos you'll use 80% of the time:
   <img src="avatar.jpg" alt="User">
   <span class="badge badge-danger badge-counter badge-pos">3</span>
 </div>
+```
+
+### Alert
+
+```html
+<!-- Basic alerts with variants -->
+<div class="alert alert-info">
+  <span class="alert-icon">ℹ️</span>
+  <div class="alert-body">
+    <div class="alert-title">Note</div>
+    <p class="alert-description">This is an informational message.</p>
+  </div>
+</div>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✓</span>
+  <div class="alert-body">
+    <div class="alert-title">Success!</div>
+    <p class="alert-description">Your changes have been saved.</p>
+  </div>
+</div>
+
+<div class="alert alert-warning">
+  <span class="alert-icon">⚠️</span>
+  <div class="alert-body">
+    <div class="alert-title">Warning</div>
+    <p class="alert-description">This action cannot be undone.</p>
+  </div>
+</div>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">✕</span>
+  <div class="alert-body">
+    <div class="alert-title">Error</div>
+    <p class="alert-description">Something went wrong. Please try again.</p>
+  </div>
+</div>
+
+<!-- Dismissible alert -->
+<div class="alert alert-info alert-dismissible">
+  <span class="alert-icon">ℹ️</span>
+  <div class="alert-body">
+    <div class="alert-title">Dismissible</div>
+    <p class="alert-description">You can close this alert.</p>
+  </div>
+  <button class="alert-dismiss-btn" aria-label="Close">×</button>
+</div>
+```
+
+### Modal
+
+```html
+<!-- Modal dialog -->
+<dialog class="modal">
+  <div class="modal-header">
+    <h2 class="modal-title">Confirm action</h2>
+    <button class="modal-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to proceed? This action cannot be undone.</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary">Cancel</button>
+    <button class="btn btn-danger">Delete</button>
+  </div>
+</dialog>
+
+<!-- JavaScript to open -->
+<script>
+  document.querySelector('dialog').showModal();
+</script>
+```
+
+**Sizes:** `modal-sm` (20rem), `modal-lg` (48rem), `modal-xl` (64rem)
+
+### Dropdown
+
+```html
+<!-- Dropdown menu -->
+<div class="dropdown">
+  <button class="btn btn-secondary">Menu</button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#edit">Edit</a>
+    <a class="dropdown-item" href="#share">Share</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="#delete">Delete</a>
+  </div>
+</div>
+
+<!-- With labels and sections -->
+<div class="dropdown">
+  <button class="btn btn-secondary">Actions</button>
+  <div class="dropdown-menu">
+    <div class="dropdown-label">Content</div>
+    <a class="dropdown-item" href="#edit">Edit</a>
+    <a class="dropdown-item" href="#duplicate">Duplicate</a>
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-label">Danger zone</div>
+    <a class="dropdown-item" href="#delete">Delete</a>
+  </div>
+</div>
+```
+
+### Tabs
+
+```html
+<!-- Basic tabs -->
+<div class="tabs">
+  <div class="tabs-list" role="tablist">
+    <button class="tab" role="tab" aria-selected="true">Home</button>
+    <button class="tab" role="tab" aria-selected="false">Settings</button>
+    <button class="tab" role="tab" aria-selected="false">Advanced</button>
+  </div>
+  <div class="tab-panels">
+    <div class="tab-panel" role="tabpanel">Home panel content</div>
+    <div class="tab-panel" role="tabpanel" hidden>Settings panel</div>
+    <div class="tab-panel" role="tabpanel" hidden>Advanced panel</div>
+  </div>
+</div>
+
+<!-- Pill-style tabs -->
+<div class="tabs tabs-pill">
+  <div class="tabs-list">
+    <button class="tab" aria-selected="true">All</button>
+    <button class="tab" aria-selected="false">Active</button>
+    <button class="tab" aria-selected="false">Archived</button>
+  </div>
+  <div class="tab-panels">
+    <div class="tab-panel">All items...</div>
+    <div class="tab-panel" hidden>Active items...</div>
+    <div class="tab-panel" hidden>Archived items...</div>
+  </div>
+</div>
+```
+
+**JavaScript snippet** (basic tab toggle):
+```js
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const index = Array.from(tab.parentElement.children).indexOf(tab);
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+    document.querySelectorAll('.tab-panel').forEach((p, i) => p.hidden = i !== index);
+    tab.setAttribute('aria-selected', 'true');
+  });
+});
 ```
 
 **Badge variants:**
@@ -746,6 +995,101 @@ xl = 2rem    (32px)
 - `center` — flex + items-center + justify-center (perfect for centering anything)
 - `stack` — flex column (for vertical layouts, forms, lists)
 - `cluster` — flex wrap + items-center (for tag-like layouts)
+
+---
+
+## Arbitrary values (CLI)
+
+For edge cases where Motif's semantic scale doesn't fit exactly, use arbitrary values with the Motif CLI:
+
+```bash
+npm install @orchestr-sh/motif
+npx motif build --content "src/**/*.html" --output motif.built.css
+```
+
+Then use arbitrary classes in your HTML:
+
+```html
+<!-- Custom padding: 47px -->
+<div class="p-[47px]">Custom padding</div>
+
+<!-- Responsive arbitrary: 320px width at md breakpoint -->
+<div class="w-full md:w-[320px]">Responsive custom width</div>
+
+<!-- Custom z-index -->
+<div class="z-[9999]">Custom stacking</div>
+
+<!-- Custom gap -->
+<div class="grid gap-[13px]">Custom gap</div>
+```
+
+The CLI:
+1. Scans your HTML files for `prefix-[value]` patterns
+2. Generates CSS rules with escaped selectors
+3. Outputs: `motif.built.css` = base CSS + generated arbitrary rules
+
+**Property mapping:**
+- `p-[value]` → `padding`
+- `px/py/pt/pb/pl/pr-[value]` → `padding-*`
+- `m-[value]` → `margin`
+- `mx/my/mt/mb/ml/mr-[value]` → `margin-*`
+- `w-[value]` → `width`
+- `h-[value]` → `height`
+- `gap-[value]`, `gap-x/y-[value]` → `gap`, `column-gap`, `row-gap`
+- `text-[value]` → `font-size`
+- `rounded-[value]` → `border-radius`
+- `z-[value]` → `z-index`
+- `opacity-[value]` → `opacity`
+- `top/right/bottom/left-[value]` → position properties
+- `max-w/min-w/max-h/min-h-[value]` → sizing properties
+
+**Note:** Import the generated file **after** your base Motif CSS:
+
+```css
+@import '@orchestr-sh/motif/index.css';
+@import './motif.built.css';  /* Generated by CLI */
+```
+
+---
+
+## Extensions & theming
+
+Create custom components and themes for Motif without forking. See [extensions/EXTENSIONS.md](./extensions/EXTENSIONS.md) for the token contract and best practices.
+
+Example custom component:
+
+```css
+/**
+ * my-accordion.css
+ * Depends on: tokens.css
+ */
+.accordion {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.accordion-trigger {
+  padding: var(--space-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+}
+
+.accordion-trigger:hover {
+  background-color: var(--color-bg-muted);
+}
+```
+
+Import it alongside Motif:
+
+```css
+@import '@orchestr-sh/motif/index.css';
+@import './my-accordion.css';
+```
+
+Your custom component automatically inherits dark mode support and token-based theming because it references semantic tokens only.
 
 ---
 

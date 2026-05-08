@@ -179,3 +179,43 @@
   --container-xl:  1280px;
   --container-2xl: 1536px;
 }
+
+/* ─── Dark Mode ────────────────────────────────────────────────── */
+/*
+ * Two-tier dark mode system:
+ * 1. [data-theme="dark"] — explicit JS toggle (highest priority)
+ * 2. @media (prefers-color-scheme: dark) — OS preference fallback
+ *
+ * Usage:
+ *   Light mode (always):      <html data-theme="light">
+ *   Dark mode (always):       <html data-theme="dark">
+ *   Auto (OS preference):     (remove data-theme attribute)
+ *
+ * JS toggle: document.documentElement.dataset.theme = 'dark'
+ */
+
+[data-theme="dark"] {
+  --color-bg:            #0a0a0a;
+  --color-bg-subtle:     #18181b;
+  --color-bg-muted:      #27272a;
+  --color-border:        #3f3f46;
+  --color-border-strong: #52525b;
+  --color-text:          #fafafa;
+  --color-text-muted:    #a0a0ab;
+  --color-text-subtle:   #71717a;
+  --color-accent-subtle: #1e3a8a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:            #0a0a0a;
+    --color-bg-subtle:     #18181b;
+    --color-bg-muted:      #27272a;
+    --color-border:        #3f3f46;
+    --color-border-strong: #52525b;
+    --color-text:          #fafafa;
+    --color-text-muted:    #a0a0ab;
+    --color-text-subtle:   #71717a;
+    --color-accent-subtle: #1e3a8a;
+  }
+}

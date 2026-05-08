@@ -1,0 +1,106 @@
+/**
+ * dropdown.css
+ * Dropdown menu component (CSS-only via :focus-within).
+ * Depends on: tokens.css
+ *
+ * Usage:
+ *   <div class="dropdown">
+ *     <button class="btn btn-secondary">Menu</button>
+ *     <div class="dropdown-menu">
+ *       <a class="dropdown-item" href="#">Item 1</a>
+ *       <a class="dropdown-item" href="#">Item 2</a>
+ *       <div class="dropdown-divider"></div>
+ *       <a class="dropdown-item" href="#">Item 3</a>
+ *     </div>
+ *   </div>
+ *
+ * Note: Trigger button must be focusable (native <button> or <a>).
+ *       Menu closes when focus leaves the dropdown container.
+ */
+
+/* ─── Base ────────────────────────────────────────────────────── */
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* ─── Menu ────────────────────────────────────────────────────── */
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: var(--z-dropdown);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  min-width: 12rem;
+  padding: var(--space-1) 0;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--duration-normal) var(--ease-default),
+              transform var(--duration-normal) var(--ease-default),
+              visibility 0s var(--duration-normal);
+  pointer-events: none;
+}
+
+.dropdown:focus-within .dropdown-menu {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+/* ─── Items ───────────────────────────────────────────────────── */
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus-visible {
+  background-color: var(--color-bg-muted);
+  color: var(--color-text);
+  outline: none;
+}
+
+.dropdown-item:active {
+  background-color: var(--color-bg-subtle);
+}
+
+/* ─── Divider ─────────────────────────────────────────────────── */
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-1) 0;
+}
+
+/* ─── Label (group header) ────────────────────────────────────── */
+
+.dropdown-label {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  cursor: default;
+}

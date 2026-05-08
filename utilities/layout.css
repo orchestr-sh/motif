@@ -80,6 +80,7 @@
 
 /* ─── Gap ─────────────────────────────────────────────────────── */
 
+/* Legacy numeric scale — use semantic aliases below */
 .gap-0    { gap: var(--space-0); }
 .gap-1    { gap: var(--space-1); }
 .gap-2    { gap: var(--space-2); }
@@ -91,6 +92,28 @@
 .gap-10   { gap: var(--space-10); }
 .gap-12   { gap: var(--space-12); }
 
+/* Semantic scale (canonical API) */
+.gap-xs  { gap: var(--space-1); }
+.gap-sm  { gap: var(--space-2); }
+.gap-md  { gap: var(--space-4); }
+.gap-lg  { gap: var(--space-6); }
+.gap-xl  { gap: var(--space-8); }
+.gap-2xl { gap: var(--space-12); }
+
+/* Semantic gap directional variants */
+.gap-x-xs { column-gap: var(--space-1); }
+.gap-x-sm { column-gap: var(--space-2); }
+.gap-x-md { column-gap: var(--space-4); }
+.gap-x-lg { column-gap: var(--space-6); }
+.gap-x-xl { column-gap: var(--space-8); }
+
+.gap-y-xs { row-gap: var(--space-1); }
+.gap-y-sm { row-gap: var(--space-2); }
+.gap-y-md { row-gap: var(--space-4); }
+.gap-y-lg { row-gap: var(--space-6); }
+.gap-y-xl { row-gap: var(--space-8); }
+
+/* Legacy numeric directional (kept for backward compat) */
 .gap-x-1  { column-gap: var(--space-1); }
 .gap-x-2  { column-gap: var(--space-2); }
 .gap-x-3  { column-gap: var(--space-3); }

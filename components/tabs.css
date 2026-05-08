@@ -1,0 +1,115 @@
+/**
+ * tabs.css
+ * Tabs component.
+ * Depends on: tokens.css
+ *
+ * Usage (with JavaScript managing aria-selected):
+ *   <div class="tabs">
+ *     <div class="tabs-list" role="tablist">
+ *       <button class="tab" role="tab" aria-selected="true">Tab 1</button>
+ *       <button class="tab" role="tab" aria-selected="false">Tab 2</button>
+ *       <button class="tab" role="tab" aria-selected="false">Tab 3</button>
+ *     </div>
+ *     <div class="tab-panels">
+ *       <div class="tab-panel" role="tabpanel">Panel 1</div>
+ *       <div class="tab-panel" role="tabpanel" hidden>Panel 2</div>
+ *       <div class="tab-panel" role="tabpanel" hidden>Panel 3</div>
+ *     </div>
+ *   </div>
+ *
+ * JavaScript snippet (basic):
+ *   document.querySelectorAll('.tab').forEach(tab => {
+ *     tab.addEventListener('click', () => {
+ *       document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+ *       document.querySelectorAll('.tab-panel').forEach(p => p.hidden = true);
+ *       tab.setAttribute('aria-selected', 'true');
+ *       const index = Array.from(tab.parentElement.children).indexOf(tab);
+ *       document.querySelectorAll('.tab-panel')[index].hidden = false;
+ *     });
+ *   });
+ */
+
+/* ─── Base ────────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Tab list (header) ───────────────────────────────────────── */
+
+.tabs-list {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+
+/* ─── Tab button ──────────────────────────────────────────────── */
+
+.tab {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  transition: color var(--duration-normal) var(--ease-default),
+              border-color var(--duration-normal) var(--ease-default);
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ─── Tab panels ──────────────────────────────────────────────── */
+
+.tab-panels {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-panel {
+  padding: var(--space-6) 0;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+/* ─── Variants ────────────────────────────────────────────────── */
+
+/* Pill-style tabs with background highlight */
+.tabs-pill .tab[aria-selected="true"] {
+  background-color: var(--color-accent-subtle);
+  border-radius: var(--radius-md);
+  border-bottom-color: transparent;
+  color: var(--color-accent);
+}
+
+/* Top border instead of bottom border */
+.tabs-bordered .tabs-list {
+  border-bottom: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.tabs-bordered .tab {
+  border-bottom: none;
+  border-top: 2px solid transparent;
+  margin-bottom: 0;
+  margin-top: -1px;
+}
+
+.tabs-bordered .tab[aria-selected="true"] {
+  border-top-color: var(--color-accent);
+  border-bottom-color: transparent;
+}

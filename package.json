@@ -23,7 +23,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/orchestr/motif"
+    "url": "https://github.com/orchestr-sh/motif"
   },
   "bugs": {
     "url": "https://github.com/orchestr-sh/motif/issues"

@@ -1,6 +1,6 @@
 {
   "name": "@orchestr-sh/motif",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Modular CSS utility library by Orchestr. One file per component — import only what you need.",
   "main": "index.css",
   "style": "index.css",

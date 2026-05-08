@@ -1,6 +1,13 @@
 # @orchestr-sh/motif
 
-A modular CSS utility library. One file per concern — import only what you need.
+A thoughtfully designed CSS utility library built for clarity and memorability. Fewer classes, better naming, semantic tokens—import only what you need.
+
+**Why Motif?**
+- **Smaller than Tailwind** (~15KB vs 50KB+)
+- **Better naming** — semantic scales (xs, sm, md, lg, xl) instead of arbitrary numbers
+- **Fewer to memorize** — rational variants only, no class explosion
+- **Token-driven** — change one variable, theme everything
+- **No breakpoint madness** — design for all screens, not mobile-first variants
 
 ---
 
@@ -107,6 +114,251 @@ Override any token in your own `:root` block **after** importing `tokens.css`:
 
 ---
 
+## Design philosophy
+
+> **TL;DR:** Learn the semantic scale (xs/sm/md/lg/xl) once and apply it everywhere. Everything else follows consistent patterns.
+
+### Naming conventions that stick
+
+Everything in Motif uses **semantic, memorable naming** so you spend less time in the docs:
+
+- **Spacing** — `p-xs`, `p-sm`, `p-md`, `p-lg`, `p-xl` (not `p-1`, `p-2`, `p-3`…)
+  - Map to real design sizes: xs = 0.25rem, sm = 0.5rem, md = 1rem, lg = 1.5rem, xl = 2rem
+  - Same scale for all: padding, margin, gap — consistency = memorability
+  - You only learn it once
+  
+- **Components** — `btn-*`, `card-*`, `badge-*` — what it is
+  - Variants grouped logically: color, size, shape, state
+  - All variants are optional — use just `btn` for defaults
+  
+- **Colors** — semantic names, not hex
+  - `text-default`, `text-muted`, `text-subtle` (vs `text-gray-600`)
+  - `bg-base`, `bg-subtle`, `bg-muted` (vs `bg-gray-50`)
+  - Status colors: `success`, `warning`, `danger` (no arbitrary numbers)
+  
+- **Layout** — utilities describe what they do
+  - `flex`, `grid`, `center` (not `d-flex`, `d-grid`)
+  - `items-center`, `justify-between` (not `ai-c`, `jc-sb`)
+  - `gap-md`, `gap-lg` (gap uses the same semantic scale as spacing)
+  
+- **Interactive states** — handled in CSS, not as separate classes
+  - Buttons, cards, and inputs all have `:hover`, `:focus`, `:active` built in
+  - No need for `hover:bg-blue` variants
+
+### Philosophy: Fewer, better classes
+
+Motif ships ~200 classes. Tailwind ships 10,000+. We win on:
+
+1. **Memorability** — You learn the semantic scale once (xs, sm, md, lg, xl) and it applies everywhere
+2. **Clarity** — No ambiguous names like `top-0` (does it mean position or margin-top?)
+3. **Size** — Minimal footprint, no bloat for unused variants
+4. **Flexibility** — Token system means you can theme/customize without touching CSS
+
+**Want deep details?** See [NAMING.md](./NAMING.md) for the complete naming philosophy with lookup tables.
+
+---
+
+## Common patterns (copy-paste ready)
+
+Here are the layouts and component combos you'll use 80% of the time:
+
+### Card grid with spacing
+
+```html
+<div class="container container-lg">
+  <div class="grid grid-cols-3 gap-lg">
+    <div class="card card-elevated">
+      <img class="card-media" src="…" alt="…">
+      <div class="card-body">
+        <h3 class="card-title">Title</h3>
+        <p class="card-description">Description.</p>
+      </div>
+    </div>
+    <!-- repeat 2 more cards -->
+  </div>
+</div>
+```
+
+**Why this works:**
+- `container` centers and constrains width
+- `grid grid-cols-3` creates 3-column layout
+- `gap-lg` adds breathing room between cards
+- `card-elevated` adds shadow for depth
+
+**Adapt it:**
+- 2 columns? Use `grid-cols-2`
+- Smaller spacing? Use `gap-sm` or `gap-md`
+- Responsive? Use `grid-auto-md` (auto-fit with 280px min per item)
+
+### Header with title and action
+
+```html
+<div class="flex items-center justify-between p-lg border-b">
+  <h1 class="text-2xl font-bold">Page title</h1>
+  <button class="btn btn-primary btn-sm">Add item</button>
+</div>
+```
+
+**Why this works:**
+- `flex items-center` aligns title and button vertically
+- `justify-between` pushes them to opposite ends
+- `p-lg` gives breathing room
+- `border-b` separates header from content
+
+**Variations:**
+- Left-aligned (no justify-between): `<div class="flex items-center gap-md p-lg">`
+- Stacked on mobile? Use `flex-col` and adjust padding
+- Dark header? Add `bg-neutral-900 text-white`
+
+### Form with labels and validation
+
+```html
+<form class="stack gap-lg max-w-md">
+  <div class="field">
+    <label class="field-label field-label-required">Email</label>
+    <div class="input-group">
+      <span class="input-group-icon-left">📧</span>
+      <input class="input input-has-icon-left" type="email" placeholder="you@example.com">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Message</label>
+    <textarea class="textarea" placeholder="Your message…"></textarea>
+    <span class="field-hint">Max 500 characters</span>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Terms</label>
+    <div class="control">
+      <input type="checkbox" class="checkbox" id="agree">
+      <label class="control-label" for="agree">I agree to the terms</label>
+    </div>
+  </div>
+
+  <button class="btn btn-primary btn-block">Send</button>
+</form>
+```
+
+**Why this works:**
+- `stack` (flex column) keeps form vertical
+- `gap-lg` spaces fields apart
+- `max-w-md` prevents the form from getting too wide
+- `field` wrapper groups label, input, and hint
+- `input-group` handles icons cleanly
+- `control` keeps checkbox and label aligned
+
+**Error state:**
+```html
+<input class="input input-error" value="…">
+<span class="field-error-msg">Email is already registered</span>
+```
+
+### Sidebar layout (sticky nav, scrolling content)
+
+```html
+<div class="flex h-screen">
+  <aside class="w-64 bg-neutral-50 border-r p-lg overflow-y-auto shrink-0">
+    <nav class="stack gap-md">
+      <a href="#" class="text-md font-semibold text-accent">Dashboard</a>
+      <a href="#" class="text-md">Users</a>
+      <a href="#" class="text-md">Settings</a>
+    </nav>
+  </aside>
+  <main class="flex-1 overflow-y-auto p-lg">
+    <!-- page content here -->
+  </main>
+</div>
+```
+
+**Why this works:**
+- `flex` makes sidebar + content side-by-side
+- `h-screen` fills viewport
+- `w-64` fixed width for sidebar
+- `shrink-0` prevents sidebar from compressing
+- `overflow-y-auto` lets each section scroll independently
+- `flex-1` makes main expand to fill remaining space
+
+### Badge with status
+
+```html
+<div class="flex items-center gap-sm">
+  <span class="badge badge-success badge-dot">Active</span>
+  <span>Jane Doe</span>
+</div>
+```
+
+**Variations:**
+```html
+<!-- Pending -->
+<span class="badge badge-warning">Pending</span>
+
+<!-- Error -->
+<span class="badge badge-danger badge-dot">Failed</span>
+
+<!-- Counter (notifications) -->
+<div class="badge-wrapper">
+  <button class="btn btn-ghost btn-icon">🔔</button>
+  <span class="badge badge-danger badge-counter badge-pos">5</span>
+</div>
+```
+
+### Modal / Dialog overlay
+
+```html
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-modal">
+  <div class="card card-elevated w-96 p-lg">
+    <h2 class="card-title mb-md">Confirm action</h2>
+    <p class="card-description mb-lg">Are you sure?</p>
+    <div class="flex gap-md justify-end">
+      <button class="btn btn-secondary">Cancel</button>
+      <button class="btn btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+```
+
+**Why this works:**
+- `fixed inset-0` fills the viewport
+- `bg-black bg-opacity-50` dims the background
+- `flex items-center justify-center` centers the modal
+- `z-modal` ensures it's on top
+- Inner `card` is the modal itself
+
+---
+
+## Quick reference
+
+**What you need to know on day one:**
+
+| What | How | Examples |
+|------|-----|----------|
+| **Spacing** | Use semantic scale: xs/sm/md/lg/xl | `p-md`, `mb-lg`, `gap-sm` |
+| **Colors** | Semantic + palette number | `text-muted`, `bg-danger`, `border-accent` |
+| **Size** | Consistent naming pattern | `btn-sm`, `card-lg`, `input-lg` |
+| **Layout** | Flex/grid utilities | `flex`, `center`, `stack`, `grid grid-cols-3` |
+| **Forms** | Field wrapper + input | `<div class="field">` + `<label>` + `<input class="input">` |
+| **Components** | Combine: element + variant + size | `<button class="btn btn-primary btn-lg">` |
+
+**The two most useful patterns:**
+
+```html
+<!-- Flex row: spread items apart -->
+<div class="flex items-center justify-between gap-md">
+  <span>Title</span>
+  <button class="btn btn-sm">Action</button>
+</div>
+
+<!-- Flex column: stack vertically -->
+<form class="stack gap-lg">
+  <input class="input">
+  <input class="input">
+  <button class="btn btn-primary btn-block">Submit</button>
+</form>
+```
+
+---
+
 ## Component examples
 
 ### Button
@@ -122,7 +374,7 @@ Override any token in your own `:root` block **after** importing `tokens.css`:
 <button class="btn btn-danger-outline">Remove</button>
 <button class="btn btn-link">Learn more</button>
 
-<!-- Sizes (default is md) -->
+<!-- Sizes (semantic scale: xs/sm/md/lg/xl) -->
 <button class="btn btn-primary btn-xs">Extra small</button>
 <button class="btn btn-primary btn-sm">Small</button>
 <button class="btn btn-primary btn-lg">Large</button>
@@ -370,22 +622,22 @@ Override any token in your own `:root` block **after** importing `tokens.css`:
   <!-- content -->
 </div>
 
-<!-- Grid layout -->
-<div class="grid grid-cols-3 gap-6">
+<!-- Grid layout with semantic gap -->
+<div class="grid grid-cols-3 gap-lg">
   <div>Item 1</div>
   <div>Item 2</div>
   <div>Item 3</div>
 </div>
 
 <!-- Responsive auto-fit grid -->
-<div class="grid grid-auto-md gap-4">
+<div class="grid grid-auto-md gap-md">
   <div class="card">…</div>
   <div class="card">…</div>
   <div class="card">…</div>
 </div>
 
-<!-- Flex utilities -->
-<div class="flex items-center justify-between gap-4">
+<!-- Flex utilities with semantic gap -->
+<div class="flex items-center justify-between gap-md">
   <span class="text-lg font-semibold">Title</span>
   <button class="btn btn-primary btn-sm">Add new</button>
 </div>
@@ -459,6 +711,22 @@ Override any token in your own `:root` block **after** importing `tokens.css`:
 </div>
 ```
 
+**Spacing utilities:**
+- **Padding:** `p-xs`, `p-sm`, `p-md`, `p-lg`, `p-xl`, `p-2xl` (or per-side: `px-*`, `py-*`, `pt-*`, `pb-*`, `pl-*`, `pr-*`)
+- **Margin:** `m-xs`, `m-sm`, `m-md`, `m-lg`, `m-xl` (or per-side: `mx-*`, `my-*`, `mt-*`, `mb-*`)
+- **Gap (flex/grid):** `gap-xs`, `gap-sm`, `gap-md`, `gap-lg`, `gap-xl` (or directional: `gap-x-*`, `gap-y-*`)
+- **Space between (fallback):** `space-x-*`, `space-y-*` (adds margin to all siblings)
+- **Negative margin:** `-mt-xs`, `-mt-sm`, `-mt-md`, `-mx-md` (useful for overlapping elements)
+
+**Semantic scale mapping:**
+```
+xs = 0.25rem (4px)
+sm = 0.5rem  (8px)
+md = 1rem    (16px)
+lg = 1.5rem  (24px)
+xl = 2rem    (32px)
+```
+
 **Container sizes:**
 - `container-sm`, `container-md`, `container-lg`, `container-xl`, `container-2xl`
 
@@ -473,12 +741,11 @@ Override any token in your own `:root` block **after** importing `tokens.css`:
 - **Grow/shrink:** `flex-1`, `flex-auto`, `flex-none`, `grow`, `grow-0`, `shrink`, `shrink-0`
 - **Justify:** `justify-start`, `justify-center`, `justify-end`, `justify-between`, `justify-around`, `justify-evenly`
 - **Align:** `items-start`, `items-center`, `items-end`, `items-baseline`, `items-stretch`
-- **Gap:** `gap-1` through `gap-12`, `gap-x-*`, `gap-y-*`
 
 **Shortcuts:**
-- `center` — flex center + justify center
-- `stack` — flex column
-- `cluster` — flex wrap with centered items
+- `center` — flex + items-center + justify-center (perfect for centering anything)
+- `stack` — flex column (for vertical layouts, forms, lists)
+- `cluster` — flex wrap + items-center (for tag-like layouts)
 
 ---
 
